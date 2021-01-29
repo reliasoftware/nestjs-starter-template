@@ -14,7 +14,7 @@ import { UsersModule } from './users/users.module';
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get<string>('DB_URL'),
-        entities: ['dist/**/*.entity.{ts,js}'],
+        entities: [__dirname + '/**/*.entity.{ts,js}'],
         synchronize: true,
         logging: true,
       }),
