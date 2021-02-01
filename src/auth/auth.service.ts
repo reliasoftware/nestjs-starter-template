@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { pick } from 'lodash';
 import { JwtService } from '@nestjs/jwt';
@@ -29,8 +29,16 @@ export class AuthService {
     };
   }
 
-  async register(info: RegisterUserDto) {
-    const user = await this.usersService.register(info);
+  async register(params: RegisterUserDto) {
+    let user = await this.usersService.findOne({
+      where: { username: params.username },
+    });
+
+    if (user) {
+      throw new BadRequestException('Invalid username');
+    }
+
+    user = await this.usersService.register(params);
     return this.login(user);
   }
 }
